@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import User
-
+from .models import CartItem
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=6)
@@ -25,9 +25,13 @@ class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
 
+
     def validate(self, data):
         email = data.get('email')
         password = data.get('password')
+class CartItemSerializer(serializers.ModelSerializer):
+    course_title = serializers.CharField(source='course.title', read_only=True)
+    course_price = serializers.DecimalField(source='course.price', max_digits=10, decimal_places=2, read_only=True)
 
         try:
             user = User.objects.get(email=email)
@@ -47,6 +51,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
+        model = CartItem
+        fields = ['id', 'course', 'course_title', 'course_price', 'quantity', 'added_at']
 
     class Meta:
         model = User
