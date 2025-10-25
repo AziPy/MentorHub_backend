@@ -2,8 +2,8 @@ from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from users.models import Favorite
-from users.serializers import FavoriteSerializer
+from favorites.models import Favorite
+from favorites.serializers import FavoriteSerializer
 
 @extend_schema_view(
     list=extend_schema(
