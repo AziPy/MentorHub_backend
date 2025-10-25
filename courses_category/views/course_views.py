@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
 from drf_spectacular.utils import extend_schema_view, extend_schema
-from users_1.models import Course
-from users_1.permissions import CanCreateEditCourse
+from users.models import Course
+from users.permissions import CanCreateEditCourse
 from .serializers import CourseSerializer
 
 @extend_schema_view(

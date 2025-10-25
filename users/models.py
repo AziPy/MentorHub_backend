@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 import uuid
-from courses_category.models import Course  # если Course у тебя в app `courses`
 
 class User(AbstractUser):
     ROLE_CHOICES = [
@@ -44,8 +43,8 @@ class User(AbstractUser):
 
 
 class CartItem(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cart_items')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='cart_items')
+    course = models.ForeignKey('courses_category.Course', on_delete=models.CASCADE)
     added_at = models.DateTimeField(auto_now_add=True)
     quantity = models.PositiveIntegerField(default=1)
 

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
-from users_1.models import User, CartItem
+from users.models import User, CartItem
 
 
 # --- Регистрация ---

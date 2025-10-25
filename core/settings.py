@@ -31,7 +31,13 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_spectacular',
     'drf_spectacular_sidecar',
+
+    'courses_category',
+    'favorites',
+    'lessons',
     'payment',
+    'reviews_requests',
+    'users',
 ]
 
 MIDDLEWARE = [
