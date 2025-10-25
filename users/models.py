@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 import uuid
-from courses.models import Course  # если Course у тебя в app `courses`
+from courses_category.models import Course  # если Course у тебя в app `courses`
 
 class User(AbstractUser):
     ROLE_CHOICES = [
