@@ -3,27 +3,40 @@ from decouple import config, Csv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# 🔐 Основное
 SECRET_KEY = config('SECRET_KEY')
-NOWPAYMENTS_API_KEY = config('NOWPAYMENTS_API_KEY')
-
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config('DEBUG', default=True, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
 
+# 💾 База данных
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / config('DATABASE_NAME', default='db.sqlite3'),
+    }
+}
+
+# 🌍 Локализация
+LANGUAGE_CODE = config('LANGUAGE_CODE', default='en-us')
+TIME_ZONE = config('TIME_ZONE', default='UTC')
+USE_I18N = True
+USE_TZ = True
+
+# 📦 Приложения
 INSTALLED_APPS = [
-    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
     'rest_framework',
+    'corsheaders',
     'drf_yasg',
-
     'payment',
 ]
 
+# 🛠 Middleware
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -37,6 +50,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'core.urls'
 
+# 🔧 Шаблоны
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -55,29 +69,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-# 💾 База данных
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / config('DATABASE_NAME', default='db.sqlite3'),
-    }
-}
-
-# 🌍 Локализация
-LANGUAGE_CODE = config('LANGUAGE_CODE', default='en-us')
-TIME_ZONE = config('TIME_ZONE', default='UTC')
-USE_I18N = True
-USE_TZ = True
-
+# 📁 Статика и медиа
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# 🔐 CORS
+# 🌐 CORS
 CORS_ALLOW_ALL_ORIGINS = True
 
+# 🔑 REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
@@ -88,4 +90,5 @@ REST_FRAMEWORK = {
     ],
 }
 
+# 🔢 Default auto field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -9,7 +9,7 @@ schema_view = get_schema_view(
       title="Crypto Payment API",
       default_version='v1',
       description="API для оплаты через NOWPayments",
-      contact=openapi.Contact(email="support@yourdomain.com"),
+      contact=openapi.Contact(email="abdysovaziret307@gmail.com"),
    ),
    public=True,
    permission_classes=(permissions.AllowAny,),

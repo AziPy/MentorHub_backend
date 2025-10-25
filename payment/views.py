@@ -1,57 +1,51 @@
+# payment/views.py
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from .models import Order
+from .serializers import OrderSerializer, CreateOrderSerializer, PaymentWebhookSerializer
 from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
-from payment.models import Order
-import requests
-from django.conf import settings
 
-NOWPAYMENTS_API_KEY = settings.NOWPAYMENTS_API_KEY
-BASE_URL = "https://api.nowpayments.io/v1"
+YOUR_WALLET_ADDRESS = "0xD64Bd94Fd4f5bE3711746080855D968a40dE62F1"
 
-@swagger_auto_schema(
-    method='get',
-    manual_parameters=[
-        openapi.Parameter('order_id', openapi.IN_PATH, description="ID заказа", type=openapi.TYPE_INTEGER)
-    ],
-    responses={200: "JSON с invoice_url"}
-)
+@swagger_auto_schema(method='post', request_body=CreateOrderSerializer, responses={201: OrderSerializer})
+@api_view(['POST'])
+def create_order(request):
+    serializer = CreateOrderSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=400)
+
+    order = Order.objects.create(amount_usd=serializer.validated_data['amount_usd'])
+    return Response(OrderSerializer(order).data, status=201)
+
+
 @api_view(['GET'])
 def create_payment(request, order_id):
-    order = Order.objects.get(id=order_id)
-    payload = {
-        "price_amount": float(order.amount_usd),
-        "price_currency": "usd",
-        "pay_currency": "btc",
-        "order_id": str(order.id),
-        "ipn_callback_url": "https://yourdomain.com/api/payment/webhook/"
-    }
-    headers = {"x-api-key": NOWPAYMENTS_API_KEY}
-    response = requests.post(f"{BASE_URL}/payment", json=payload, headers=headers)
-    data = response.json()
-    order.payment_id = data.get("payment_id")
-    order.save()
-    return Response({"invoice_url": data.get("invoice_url")})
+    try:
+        order = Order.objects.get(id=order_id)
+    except Order.DoesNotExist:
+        return Response({"error": "Order not found"}, status=404)
 
-@swagger_auto_schema(
-    method='post',
-    request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        properties={
-            'payment_id': openapi.Schema(type=openapi.TYPE_STRING),
-            'payment_status': openapi.Schema(type=openapi.TYPE_STRING),
-        },
-    ),
-    responses={200: "OK"}
-)
+    return Response({
+        "wallet_address": YOUR_WALLET_ADDRESS,
+        "amount_usd": str(order.amount_usd),
+        "order_id": order.id
+    })
+
+
+@swagger_auto_schema(method='post', request_body=PaymentWebhookSerializer)
 @api_view(['POST'])
 def payment_webhook(request):
-    data = request.data
-    payment_id = data.get("payment_id")
-    payment_status = data.get("payment_status")
-    order = Order.objects.filter(payment_id=payment_id).first()
-    if not order:
+    serializer = PaymentWebhookSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=400)
+
+    order_id = serializer.validated_data['order_id']
+
+    try:
+        order = Order.objects.get(id=order_id)
+    except Order.DoesNotExist:
         return Response({"error": "Order not found"}, status=404)
-    order.status = payment_status
+
+    order.status = "paid"
     order.save()
-    return Response({"message": "ok"})
+    return Response({"message": "Payment recorded"})
