@@ -1,9 +1,9 @@
 from django.db import router
 from django.urls import path, include
 
-from users.views.cart_views import CartViewSet
-from users.views.auth_views import RegisterView, LoginView, LogoutView
-from users.views.profile_views import UserProfileView
+from users_1.views.cart_views import CartViewSet
+from users_1.views.auth_views import RegisterView, LoginView, LogoutView
+from users_1.views.profile_views import UserProfileView
 
 router.register(r'cart', CartViewSet)
 urlpatterns = [

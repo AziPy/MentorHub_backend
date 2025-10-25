@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema_view, extend_schema
-from users.serializers import UserSerializer, UserUpdateSerializer
+from users_1.serializers import UserSerializer, UserUpdateSerializer
 
 @extend_schema_view(
     get=extend_schema(
