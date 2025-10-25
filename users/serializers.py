@@ -20,6 +20,24 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
         return user
 
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        email = data.get('email')
+        password = data.get('password')
+
+        try:
+            user = User.objects.get(email=email)
+            if user.check_password(password):
+                data['user'] = user
+                return data
+        except User.DoesNotExist:
+            pass
+
+        raise serializers.ValidationError("Неверный email или пароль")
 class UserUpdateSerializer(serializers.ModelSerializer):
     """Сериализатор для обновления профиля"""
     class Meta:
