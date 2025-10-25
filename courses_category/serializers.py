@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from courses_category.models import Category
+from courses_category.models import Category, Course
 
 
 class CategorySerializer(serializers.ModelSerializer):
