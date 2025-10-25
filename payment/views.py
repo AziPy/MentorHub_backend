@@ -1,4 +1,3 @@
-# payment/views.py
 from rest_framework.decorators import api_view, schema
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
@@ -25,9 +24,7 @@ YOUR_WALLET_ADDRESS = "0xD64Bd94Fd4f5bE3711746080855D968a40dE62F1"
 )
 @api_view(['POST'])
 def create_order(request):
-    """
-    Создает новый заказ и возвращает его данные.
-    """
+
     serializer = CreateOrderSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
@@ -55,9 +52,7 @@ def create_order(request):
 )
 @api_view(['GET'])
 def create_payment(request, order_id):
-    """
-    Возвращает ETH-адрес и сумму для перевода.
-    """
+
     try:
         order = Order.objects.get(id=order_id)
     except Order.DoesNotExist:
