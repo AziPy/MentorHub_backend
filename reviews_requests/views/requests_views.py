@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from reviews_requests.models import RequestsNew
+from reviews_requests.permissions import RequestPermission
 from reviews_requests.serializers import RequestsNewSerializer
-from reviews_requests.permissions import IsMentor
 @extend_schema_view(
     list=extend_schema(tags=['Requests']),
     retrieve=extend_schema(tags=['Requests']),
@@ -14,7 +14,7 @@ from reviews_requests.permissions import IsMentor
 class RequestsNewViewSet(viewsets.ModelViewSet):
     queryset = RequestsNew.objects.all()
     serializer_class = RequestsNewSerializer
-    permission_classes = [IsMentor]
+    permission_classes = [RequestPermission]
 
     def get_queryset(self):
         qs = super().get_queryset()

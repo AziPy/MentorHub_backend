@@ -1,9 +1,9 @@
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from drf_spectacular.utils import extend_schema_view, extend_schema
-from users.models import Category
+from courses_category.models import Category
 from users.permissions import IsAdminOrReadOnly
-from users.serializers import CategorySerializer
+from courses_category.serializers import CategorySerializer
 
 @extend_schema_view(
     list=extend_schema(tags=['Categories']),

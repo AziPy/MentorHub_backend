@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from users.models import CartItem
+from users.permissions import CartPermission
 from users.serializers import CartItemSerializer
 from rest_framework.permissions import IsAuthenticated
 
@@ -39,7 +40,7 @@ from rest_framework.permissions import IsAuthenticated
 class CartViewSet(viewsets.ModelViewSet):
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [CartPermission]
 
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)

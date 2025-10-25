@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import User
+from .models import User, CartItem
+
 
 # ---------------- User Admin ----------------
 @admin.register(User)
@@ -36,3 +37,16 @@ class UserAdmin(UserAdmin):
     def get_full_name(self, obj):
         return f"{obj.first_name} {obj.last_name}".strip() or obj.email
     get_full_name.short_description = 'Name'
+
+
+
+@admin.register(CartItem)
+class CartAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'course', 'quantity', 'total_price', 'added_at')  # status убрал
+    search_fields = ('user__email', 'course__title')
+    list_filter = ('added_at',)
+
+    def total_price(self, obj):
+        # предполагаем, что у курса есть поле price
+        return obj.course.price * obj.quantity
+    total_price.short_description = 'Total Price'

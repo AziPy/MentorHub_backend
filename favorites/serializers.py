@@ -1,5 +1,11 @@
 from rest_framework import serializers
 
+from courses_category.models import Course
+from courses_category.serializers import CourseSerializer
+from favorites.models import Favorite
+from users.models import User
+from users.serializers import UserSerializer
+
 
 class FavoriteSerializer(serializers.ModelSerializer):
     item = serializers.SerializerMethodField()
@@ -19,4 +25,3 @@ class FavoriteSerializer(serializers.ModelSerializer):
             return CourseSerializer(Course.objects.get(id=obj.item_id)).data
         return UserSerializer(User.objects.get(id=obj.item_id)).data
 
-class

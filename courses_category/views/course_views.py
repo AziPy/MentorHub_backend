@@ -1,9 +1,8 @@
 from rest_framework import viewsets
-from rest_framework.permissions import AllowAny
 from drf_spectacular.utils import extend_schema_view, extend_schema
-from users.models import Course
-from users.permissions import CanCreateEditCourse
-from .serializers import CourseSerializer
+from courses_category.models import Course
+from courses_category.permission import CoursePermission
+from courses_category.serializers import CourseSerializer
 
 @extend_schema_view(
     list=extend_schema(tags=['Courses']),
@@ -16,7 +15,7 @@ from .serializers import CourseSerializer
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    permission_classes = [CanCreateEditCourse]
+    permission_classes = [CoursePermission]
 
     def get_queryset(self):
         queryset = super().get_queryset()

@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY', default='supersecretkey')
 DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
+ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     'default': {
@@ -31,10 +31,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_spectacular',
     'drf_spectacular_sidecar',
-
     'courses_category',
     'favorites',
-    'lessons',
     'payment',
     'reviews_requests',
     'users',
@@ -79,23 +77,49 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://ayla-diandrous-unobscenely.ngrok-free.dev',
+    'http://localhost:8000',  # если локально тестируешь
+]
+
 
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        'core.authentication.CustomJWTAuthentication',  # Имя класса в виде строки!
     ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'core.permissions.ReadOnlyOrAuthenticated',  # <--- здесь
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',  # <- вот эта строчка
 }
+
+
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Crypto Payment API',
-    'DESCRIPTION': 'API для приёма крипто-платежей (MetaMask, Telegram, и т.д.)',
     'VERSION': '1.0.0',
+    'DESCRIPTION': 'API для приёма крипто-платежей',
     'SERVE_INCLUDE_SCHEMA': False,
+    'SECURITY': [{'TokenAuth': []}],  # оставляем
+    'COMPONENT_SPLIT_REQUEST': True,
 }
+
+
+
+
+from drf_spectacular.extensions import OpenApiAuthenticationExtension
+
+class TokenScheme(OpenApiAuthenticationExtension):
+    target_class = 'core.authentication.CustomJWTAuthentication'  # строка!
+    name = 'TokenAuth'
+
+    def get_security_definition(self, auto_schema):
+        return {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization',
+        }
+
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

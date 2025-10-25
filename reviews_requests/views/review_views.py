@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from reviews_requests.models import Review
+from reviews_requests.permissions import ReviewPermission
 from reviews_requests.serializers import ReviewSerializer
 
 @extend_schema_view(
@@ -16,7 +17,7 @@ from reviews_requests.serializers import ReviewSerializer
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [ReviewPermission]
 
     def create(self, request, *args, **kwargs):
         if not hasattr(request.user, 'role') or request.user.role != 'student':

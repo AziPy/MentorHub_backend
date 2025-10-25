@@ -1,5 +1,10 @@
-from django.db import router
-
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include
 from favorites.views.favorite_views import FavoriteViewSet
 
-router.register(r'favorites', FavoriteViewSet,
+router = DefaultRouter()
+router.register(r'favorites', FavoriteViewSet, basename='favorites')
+
+urlpatterns = [
+    path('', include(router.urls)),
+]

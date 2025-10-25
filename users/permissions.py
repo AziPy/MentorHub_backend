@@ -1,4 +1,6 @@
 from rest_framework import permissions
+from rest_framework.permissions import BasePermission
+
 
 class IsAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -48,3 +50,53 @@ class CanCreateEditCourse(permissions.BasePermission):
 class IsMentor(permissions.BasePermission):
     def has_permission(self, request, view):
         return (request.user and request.user.is_authenticated and request.user.role == 'mentor')
+
+from rest_framework.permissions import BasePermission, SAFE_METHODS
+
+class CartPermission(BasePermission):
+    def has_permission(self, request, view):
+        if not request.user.is_authenticated:
+            return False  # анонимам доступ запрещен
+
+        # Админ может со всеми
+        if request.user.is_superuser:
+            return True
+
+        # Ментор не имеет доступа к корзине
+        if getattr(request.user, 'role', None) == 'mentor':
+            return False
+
+        # Студент может работать со своей корзиной
+        if getattr(request.user, 'role', None) == 'student':
+            return True
+
+        return False
+
+    def has_object_permission(self, request, view, obj):
+        if not request.user.is_authenticated:
+            return False
+
+        if request.user.is_superuser:
+            return True
+
+        # Студент может только со своими объектами
+        if getattr(request.user, 'role', None) == 'student' and obj.user == request.user:
+            return True
+
+        return False
+
+from rest_framework.permissions import BasePermission, SAFE_METHODS
+
+class MentorPermission(BasePermission):
+    """
+    Просмотр доступен всем, изменение только для админа
+    """
+    def has_permission(self, request, view):
+        if request.method in SAFE_METHODS:
+            return True
+        return request.user.is_authenticated and request.user.is_superuser
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
+        return request.user.is_authenticated and request.user.is_superuser
