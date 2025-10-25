@@ -7,4 +7,8 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = ['id', 'student', 'mentor', 'text', 'rating', 'created_at']
         read_only_fields = ['student', 'created_at']
 
-
+class RequestsNewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RequestsNew
+        fields = ['id', 'student', 'mentor', 'title', 'description', 'status', 'created_at']
+        read_only_fields = ['student', 'created_at']
