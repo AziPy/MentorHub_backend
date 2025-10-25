@@ -3,20 +3,35 @@ from decouple import config, Csv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY')
-DEBUG = config('DEBUG', default=False, cast=bool)
+SECRET_KEY = config('SECRET_KEY', default='supersecretkey')
+DEBUG = config('DEBUG', default=True, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / config('DATABASE_NAME', default='db.sqlite3'),
+    }
+}
+
+LANGUAGE_CODE = config('LANGUAGE_CODE', default='en-us')
+TIME_ZONE = config('TIME_ZONE', default='UTC')
+USE_I18N = True
+USE_TZ = True
+
 INSTALLED_APPS = [
-    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
+
     'rest_framework',
+    'corsheaders',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
+    'payment',
 ]
 
 MIDDLEWARE = [
@@ -50,30 +65,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-# 💾 База данных
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / config('DATABASE_NAME', default='db.sqlite3'),
-    }
-}
-
-# 🌍 Локализация
-LANGUAGE_CODE = config('LANGUAGE_CODE', default='en-us')
-TIME_ZONE = config('TIME_ZONE', default='UTC')
-USE_I18N = True
-USE_TZ = True
-
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# 🔐 CORS
 CORS_ALLOW_ALL_ORIGINS = True
 
+
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
@@ -81,6 +83,13 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Crypto Payment API',
+    'DESCRIPTION': 'API для приёма крипто-платежей (MetaMask, Telegram, и т.д.)',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
