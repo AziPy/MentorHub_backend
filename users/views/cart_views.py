@@ -7,33 +7,33 @@ from rest_framework.permissions import IsAuthenticated
 @extend_schema_view(
     list=extend_schema(
         tags=['Cart'],
-        summary='List user cart items',
-        description='Retrieves cart items for the authenticated user.'
+        summary='List user users items',
+        description='Retrieves users items for the authenticated user.'
     ),
     create=extend_schema(
         tags=['Cart'],
-        summary='Add item to cart',
-        description='Adds a course to the user\'s cart.'
+        summary='Add item to users',
+        description='Adds a course to the user\'s users.'
     ),
     retrieve=extend_schema(
         tags=['Cart'],
-        summary='Retrieve cart item',
-        description='Gets a specific cart item.'
+        summary='Retrieve users item',
+        description='Gets a specific users item.'
     ),
     update=extend_schema(
         tags=['Cart'],
-        summary='Update cart item',
-        description='Updates cart item quantity.'
+        summary='Update users item',
+        description='Updates users item quantity.'
     ),
     partial_update=extend_schema(
         tags=['Cart'],
-        summary='Partial update cart item',
-        description='Partially updates cart item.'
+        summary='Partial update users item',
+        description='Partially updates users item.'
     ),
     destroy=extend_schema(
         tags=['Cart'],
-        summary='Remove cart item',
-        description='Removes a cart item.'
+        summary='Remove users item',
+        description='Removes a users item.'
     )
 )
 class CartViewSet(viewsets.ModelViewSet):
