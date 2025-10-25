@@ -1,5 +1,5 @@
 from django.contrib import admin
-from users.models import Review, RequestsNew
+from reviews_requests.models import Review, RequestsNew
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):

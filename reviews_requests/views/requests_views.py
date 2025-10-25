@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 from drf_spectacular.utils import extend_schema_view, extend_schema
-from users.models import RequestsNew
-from users.serializers import RequestsNewSerializer
-from users.permissions import IsMentor
+from reviews_requests.models import RequestsNew
+from reviews_requests.serializers import RequestsNewSerializer
+from reviews_requests.permissions import IsMentor
 @extend_schema_view(
     list=extend_schema(tags=['Requests']),
     retrieve=extend_schema(tags=['Requests']),

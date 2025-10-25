@@ -2,8 +2,8 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema_view, extend_schema
-from users.models import Review
-from users.serializers import ReviewSerializer
+from reviews_requests.models import Review
+from reviews_requests.serializers import ReviewSerializer
 
 @extend_schema_view(
     list=extend_schema(tags=['Reviews']),
